@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Any
 
 import aiohttp
 
-from chives.server.server import ssl_context_for_client
+from chives.server.server import NodeType, ssl_context_for_client
 from chives.server.ssl_context import private_ssl_ca_paths
 from chives.types.blockchain_format.sized_bytes import bytes32
 from chives.util.byte_types import hexstr_to_bytes
