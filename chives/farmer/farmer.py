@@ -247,7 +247,7 @@ class Farmer:
                         "Harvester did not respond. You might need to update harvester to the latest version"
                     )
 
-    async def get_cached_harvesters(self, connection: WSChiaConnection) -> Optional[Tuple[Dict, float]]:
+    async def get_cached_harvesters(self, connection: WSChivesConnection) -> Optional[Tuple[Dict, float]]:
         host_cache = self.harvester_cache.get(connection.peer_host)
         if host_cache is None:
             return None
