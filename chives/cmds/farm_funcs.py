@@ -214,14 +214,13 @@ async def summary(
     wallet_not_ready: bool = False
     wallet_not_running: bool = False
     amounts = None
-    #try:
-    amounts = await get_wallets_stats(wallet_rpc_port)
-    #except Exception as e:
-    #if isinstance(e, aiohttp.ClientConnectorError):
-    if isinstance(aiohttp.ClientConnectorError):
-        wallet_not_running = True
-    else:
-        wallet_not_ready = True
+    try:
+        amounts = await get_wallets_stats(wallet_rpc_port)
+    except Exception as e:
+        if isinstance(e, aiohttp.ClientConnectorError):
+            wallet_not_running = True
+        else:
+            wallet_not_ready = True
 
     print("Farming status: ", end="")
     if blockchain_state is None:
@@ -310,6 +309,7 @@ async def summary(
     minutes = -1
 
 #######
+    print("test 312")
     if blockchain_state is not None and all_harvesters is not None:
         proportion = PlotStats.total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
         minutes = int((await get_average_block_time(rpc_port) / 60) / proportion) if proportion else -1
