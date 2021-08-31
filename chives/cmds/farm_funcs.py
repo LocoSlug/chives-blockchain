@@ -321,14 +321,14 @@ async def summary(
         print("Expected time to win: " + format_minutes(minutes))
 #######
 
-    if blockchain_state is not None and plots is not None:
-        proportion = total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
-        minutes = int((await get_average_block_time(rpc_port) / 60) / proportion) if proportion else -1
+    #if blockchain_state is not None and plots is not None:
+    #    proportion = total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
+    #    minutes = int((await get_average_block_time(rpc_port) / 60) / proportion) if proportion else -1
 
-    if plots is not None and len(plots["plots"]) == 0:
-        print("Expected time to win: Never (no plots)")
-    else:
-        print("Expected time to win: " + format_minutes(minutes))
+    #if plots is not None and len(plots["plots"]) == 0:
+    #    print("Expected time to win: Never (no plots)")
+    #else:
+    #    print("Expected time to win: " + format_minutes(minutes))
 
     if amounts is None:
         if wallet_not_running:
