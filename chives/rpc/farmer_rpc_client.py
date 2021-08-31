@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 from chives.rpc.rpc_client import RpcClient
 from chives.types.blockchain_format.sized_bytes import bytes32
