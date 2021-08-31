@@ -34,7 +34,7 @@ async def get_harvesters(farmer_rpc_port: Optional[int]) -> Optional[Dict[str, A
     farmer_client.close()
     await farmer_client.await_closed()
     return plots
-	
+
 async def get_plots(harvester_rpc_port: int) -> Optional[Dict[str, Any]]:
     plots = None
     try:
@@ -307,7 +307,7 @@ async def summary(
 #######
 
     minutes = -1
-	
+
 #######
     if blockchain_state is not None and all_harvesters is not None:
         proportion = PlotStats.total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1

@@ -99,3 +99,4 @@ build_scripts\win_build
 build_scripts/win_build
 win_code_sign_cert.p12
 .vs/slnx.sqlite
+.vs/PythonSettings.json
