@@ -17,6 +17,24 @@ from chives.util.misc import format_minutes
 SECONDS_PER_BLOCK = (24 * 3600) / 4608
 
 
+async def get_harvesters(farmer_rpc_port: Optional[int]) -> Optional[Dict[str, Any]]:
+    try:
+        config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
+        self_hostname = config["self_hostname"]
+        if farmer_rpc_port is None:
+            farmer_rpc_port = config["farmer"]["rpc_port"]
+        farmer_client = await FarmerRpcClient.create(self_hostname, uint16(farmer_rpc_port), DEFAULT_ROOT_PATH, config)
+        plots = await farmer_client.get_harvesters()
+    except Exception as e:
+        if isinstance(e, aiohttp.ClientConnectorError):
+            print(f"Connection error. Check if farmer is running at {farmer_rpc_port}")
+        else:
+            print(f"Exception from 'harvester' {e}")
+        return None
+    farmer_client.close()
+    await farmer_client.await_closed()
+    return plots
+	
 async def get_plots(harvester_rpc_port: int) -> Optional[Dict[str, Any]]:
     plots = None
     try:
@@ -188,6 +206,7 @@ async def summary(
     harvester_rpc_port: Optional[int],
     farmer_rpc_port: Optional[int],
 ) -> None:
+    all_harvesters = await get_harvesters(farmer_rpc_port)
     plots = await get_plots(harvester_rpc_port)
     blockchain_state = await get_blockchain_state(rpc_port)
     farmer_running = await is_farmer_running(farmer_rpc_port)
@@ -241,7 +260,65 @@ async def summary(
     else:
         print("Estimated network space: Unknown")
 
+#######
+    class PlotStats:
+        total_plot_size = 0
+        total_plots = 0
+
+    if all_harvesters is not None:
+        harvesters_local: dict = {}
+        harvesters_remote: dict = {}
+        for harvester in all_harvesters["harvesters"]:
+            ip = harvester["connection"]["host"]
+            if is_localhost(ip):
+                harvesters_local[harvester["connection"]["node_id"]] = harvester
+            else:
+                if ip not in harvesters_remote:
+                    harvesters_remote[ip] = {}
+                harvesters_remote[ip][harvester["connection"]["node_id"]] = harvester
+
+        def process_harvesters(harvester_peers_in: dict):
+            for harvester_peer_id, plots in harvester_peers_in.items():
+                total_plot_size_harvester = sum(map(lambda x: x["file_size"], plots["plots"]))
+                PlotStats.total_plot_size += total_plot_size_harvester
+                PlotStats.total_plots += len(plots["plots"])
+                print(f"   {len(plots['plots'])} plots of size: {format_bytes(total_plot_size_harvester)}")
+
+        if len(harvesters_local) > 0:
+            print(f"Local Harvester{'s' if len(harvesters_local) > 1 else ''}")
+            process_harvesters(harvesters_local)
+        for harvester_ip, harvester_peers in harvesters_remote.items():
+            print(f"Remote Harvester{'s' if len(harvester_peers) > 1 else ''} for IP: {harvester_ip}")
+            process_harvesters(harvester_peers)
+
+        print(f"Plot count for all harvesters: {PlotStats.total_plots}")
+
+        print("Total size of plots: ", end="")
+        print(format_bytes(PlotStats.total_plot_size))
+    else:
+        print("Plot count: Unknown")
+        print("Total size of plots: Unknown")
+
+    if blockchain_state is not None:
+        print("Estimated network space: ", end="")
+        print(format_bytes(blockchain_state["space"]))
+    else:
+        print("Estimated network space: Unknown")
+#######
+
     minutes = -1
+	
+#######
+    if blockchain_state is not None and all_harvesters is not None:
+        proportion = PlotStats.total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
+        minutes = int((await get_average_block_time(rpc_port) / 60) / proportion) if proportion else -1
+
+    if all_harvesters is not None and PlotStats.total_plots == 0:
+        print("Expected time to win: Never (no plots)")
+    else:
+        print("Expected time to win: " + format_minutes(minutes))
+#######
+
     if blockchain_state is not None and plots is not None:
         proportion = total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
         minutes = int((await get_average_block_time(rpc_port) / 60) / proportion) if proportion else -1
