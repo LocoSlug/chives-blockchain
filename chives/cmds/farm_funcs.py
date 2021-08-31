@@ -206,7 +206,8 @@ async def summary(
     harvester_rpc_port: Optional[int],
     farmer_rpc_port: Optional[int],
 ) -> None:
-    all_harvesters = await get_harvesters(farmer_rpc_port)
+    #all_harvesters = await get_harvesters(farmer_rpc_port)
+    all_harvesters = None
     plots = await get_plots(harvester_rpc_port)
     blockchain_state = await get_blockchain_state(rpc_port)
     farmer_running = await is_farmer_running(farmer_rpc_port)
