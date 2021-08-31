@@ -245,22 +245,22 @@ async def summary(
         print(f"Pool Reward: {amounts['pool_reward_amount'] / units['chives']}")
 
     total_plot_size = 0
-    if plots is not None:
-        total_plot_size = sum(map(lambda x: x["file_size"], plots["plots"]))
+    #if plots is not None:
+    #    total_plot_size = sum(map(lambda x: x["file_size"], plots["plots"]))
 
-        print(f"Plot count: {len(plots['plots'])}")
+    #    print(f"Plot count: {len(plots['plots'])}")
 
-        print("Total size of plots: ", end="")
-        print(format_bytes(total_plot_size))
-    else:
-        print("Plot count: Unknown")
-        print("Total size of plots: Unknown")
+    #    print("Total size of plots: ", end="")
+    #    print(format_bytes(total_plot_size))
+    #else:
+    #    print("Plot count: Unknown")
+    #    print("Total size of plots: Unknown")
 
-    if blockchain_state is not None:
-        print("Estimated network space: ", end="")
-        print(format_bytes(blockchain_state["space"]))
-    else:
-        print("Estimated network space: Unknown")
+    #if blockchain_state is not None:
+    #    print("Estimated network space: ", end="")
+    #    print(format_bytes(blockchain_state["space"]))
+    #else:
+    #    print("Estimated network space: Unknown")
 
 #######
     class PlotStats:
