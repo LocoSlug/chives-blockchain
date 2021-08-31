@@ -30,6 +30,8 @@ async def get_harvesters(farmer_rpc_port: Optional[int]) -> Optional[Dict[str, A
             print(f"Connection error. Check if farmer is running at {farmer_rpc_port}")
         else:
             print(f"Exception from 'harvester' {e}")
+        farmer_client.close()
+        await farmer_client.await_closed()
         return None
     farmer_client.close()
     await farmer_client.await_closed()
@@ -206,8 +208,7 @@ async def summary(
     harvester_rpc_port: Optional[int],
     farmer_rpc_port: Optional[int],
 ) -> None:
-    #all_harvesters = await get_harvesters(farmer_rpc_port)
-    all_harvesters = None
+    all_harvesters = await get_harvesters(farmer_rpc_port)    
     plots = await get_plots(harvester_rpc_port)
     blockchain_state = await get_blockchain_state(rpc_port)
     farmer_running = await is_farmer_running(farmer_rpc_port)
@@ -215,13 +216,13 @@ async def summary(
     wallet_not_ready: bool = False
     wallet_not_running: bool = False
     amounts = None
-    #try:
-    #    amounts = await get_wallets_stats(wallet_rpc_port)
-    #except Exception as e:
-    #    if isinstance(e, aiohttp.ClientConnectorError):
-    #        wallet_not_running = True
-    #    else:
-    #        wallet_not_ready = True
+    try:
+        amounts = await get_wallets_stats(wallet_rpc_port)
+    except Exception as e:
+        if isinstance(e, aiohttp.ClientConnectorError):
+            wallet_not_running = True
+        else:
+            wallet_not_ready = True
     wallet_not_running = True
     print("Farming status: ", end="")
     if blockchain_state is None:
