@@ -214,13 +214,14 @@ async def summary(
     wallet_not_ready: bool = False
     wallet_not_running: bool = False
     amounts = None
-    try:
-        amounts = await get_wallets_stats(wallet_rpc_port)
-    except Exception as e:
-        if isinstance(e, aiohttp.ClientConnectorError):
-            wallet_not_running = True
-        else:
-            wallet_not_ready = True
+    #try:
+    amounts = await get_wallets_stats(wallet_rpc_port)
+    #except Exception as e:
+    #if isinstance(e, aiohttp.ClientConnectorError):
+    if isinstance(aiohttp.ClientConnectorError):
+        wallet_not_running = True
+    else:
+        wallet_not_ready = True
 
     print("Farming status: ", end="")
     if blockchain_state is None:
