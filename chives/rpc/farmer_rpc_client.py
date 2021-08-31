@@ -41,3 +41,6 @@ class FarmerRpcClient(RpcClient):
         if pool_target is not None:
             request["pool_target"] = pool_target
         return await self.fetch("set_reward_targets", request)
+
+    async def get_harvesters(self) -> Dict[str, Any]:
+        return await self.fetch("get_harvesters", {})
