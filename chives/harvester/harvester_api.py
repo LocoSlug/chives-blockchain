@@ -3,13 +3,14 @@ import time
 from pathlib import Path
 from typing import Callable, List, Tuple
 
-from blspy import AugSchemeMPL, G2Element
+from blspy import AugSchemeMPL, G2Element, G1Element
 
 from chives.consensus.pot_iterations import calculate_iterations_quality, calculate_sp_interval_iters
 from chives.harvester.harvester import Harvester
 from chives.plotting.plot_tools import PlotInfo, parse_plot_info
 from chives.protocols import harvester_protocol
 from chives.protocols.farmer_protocol import FarmingInfo
+from chives.protocols.harvester_protocol import Plot
 from chives.protocols.protocol_message_types import ProtocolMessageTypes
 from chives.server.outbound_message import make_msg
 from chives.server.ws_connection import WSChivesConnection
@@ -270,3 +271,24 @@ class HarvesterAPI:
         )
 
         return make_msg(ProtocolMessageTypes.respond_signatures, response)
+
+    @api_request
+    async def request_plots(self, _: harvester_protocol.RequestPlots):
+        plots_response = []
+        plots, failed_to_open_filenames, no_key_filenames = self.harvester.get_plots()
+        for plot in plots:
+            plots_response.append(
+                Plot(
+                    plot["filename"],
+                    plot["size"],
+                    plot["plot_id"],
+                    plot["pool_public_key"],
+                    plot["pool_contract_puzzle_hash"],
+                    plot["plot_public_key"],
+                    plot["file_size"],
+                    plot["time_modified"],
+                )
+            )
+
+        response = harvester_protocol.RespondPlots(plots_response, failed_to_open_filenames, no_key_filenames)
+        return make_msg(ProtocolMessageTypes.respond_plots, response)

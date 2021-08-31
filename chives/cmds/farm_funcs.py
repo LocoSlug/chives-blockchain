@@ -262,7 +262,7 @@ async def summary(
     #else:
     #    print("Estimated network space: Unknown")
 
-#######
+####### Ported from chia 1.2.x
     class PlotStats:
         total_plot_size = 0
         total_plots = 0
@@ -310,7 +310,7 @@ async def summary(
 
     minutes = -1
 
-#######    
+####### Ported from chia 1.2.x
     if blockchain_state is not None and all_harvesters is not None:
         proportion = PlotStats.total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
         minutes = int((await get_average_block_time(rpc_port) / 60) / proportion) if proportion else -1
