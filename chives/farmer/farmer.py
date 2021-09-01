@@ -19,8 +19,8 @@ from chives.server.ws_connection import WSChivesConnection
 from chives.types.blockchain_format.proof_of_space import ProofOfSpace
 from chives.types.blockchain_format.sized_bytes import bytes32
 from chives.util.bech32m import decode_puzzle_hash
-from chives.util.config import load_config, save_config
-from chives.util.ints import uint32, uint64
+from chives.util.config import load_config, save_config, config_path_for_filename
+from chives.util.ints import uint8, uint16, uint32, uint64
 from chives.util.keychain import Keychain
 from chives.wallet.derive_keys import master_sk_to_farmer_sk, master_sk_to_pool_sk, master_sk_to_wallet_sk
 
@@ -31,6 +31,22 @@ UPDATE_HARVESTER_CACHE_INTERVAL: int = 60
 """
 HARVESTER PROTOCOL (FARMER <-> HARVESTER)
 """
+
+
+class HarvesterCacheEntry:
+    def __init__(self):
+        self.data: Optional[dict] = None
+        self.last_update: float = 0
+
+    def set_data(self, data):
+        self.data = data
+        self.last_update = time.time()
+
+    def needs_update(self):
+        return time.time() - self.last_update > UPDATE_HARVESTER_CACHE_INTERVAL
+
+    def expired(self):
+        return time.time() - self.last_update > UPDATE_HARVESTER_CACHE_INTERVAL * 10
 
 
 class Farmer:
