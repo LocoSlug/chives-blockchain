@@ -81,3 +81,8 @@ class ProtocolMessageTypes(Enum):
 
     # Simulator protocol
     farm_new_block = 65
+
+    # New harvester protocol
+    new_signage_point_harvester = 66
+    request_plots = 67
+    respond_plots = 68
