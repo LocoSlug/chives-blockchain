@@ -113,7 +113,7 @@ class Farmer:
             error_str = "No keys exist. Please run 'chives keys generate' or open the UI."
             raise RuntimeError(error_str)
 
-        self.harvester_cache: Dict[str, Dict[str, Tuple[Dict, float]]] = {}
+        self.harvester_cache: Dict[str, Dict[str, HarvesterCacheEntry]] = {}
 
     async def _start(self):
         self.cache_clear_task = asyncio.create_task(self._periodically_clear_cache_and_refresh_task())
