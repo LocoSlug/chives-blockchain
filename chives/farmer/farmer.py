@@ -43,7 +43,7 @@ from chives.util.keychain import Keychain
 #)
 #from chives.wallet.puzzles.singleton_top_layer import SINGLETON_MOD
 
-singleton_mod_hash = SINGLETON_MOD.get_tree_hash()
+#singleton_mod_hash = SINGLETON_MOD.get_tree_hash()
 
 log = logging.getLogger(__name__)
 
