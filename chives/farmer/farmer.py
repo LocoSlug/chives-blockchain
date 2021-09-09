@@ -90,7 +90,8 @@ class Farmer:
         self.keychain = keychain
         self.state_changed_callback: Optional[Callable] = None
         self.log = log
-        self.all_root_sks: List[PrivateKey] = [sk for sk, _ in self.keychain.get_all_private_keys()]
+        all_sks = self.keychain.get_all_private_keys()
+#        self.all_root_sks: List[PrivateKey] = [sk for sk, _ in self.keychain.get_all_private_keys()]
         
         self._private_keys = [master_sk_to_farmer_sk(sk) for sk, _ in all_sks] + [
             master_sk_to_pool_sk(sk) for sk, _ in all_sks
