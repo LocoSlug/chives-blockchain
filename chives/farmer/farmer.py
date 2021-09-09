@@ -13,7 +13,7 @@ import chives.server.ws_connection as ws  # lgtm [py/import-and-import-from]
 from chives.consensus.coinbase import create_puzzlehash_for_pk
 from chives.consensus.constants import ConsensusConstants
 from chives.protocols import farmer_protocol, harvester_protocol
-#from chia.protocols.pool_protocol import (
+#from chives.protocols.pool_protocol import (
 #    ErrorResponse,
 #    get_current_authentication_token,
 #    GetFarmerResponse,
@@ -34,16 +34,16 @@ from chives.util.config import load_config, save_config, config_path_for_filenam
 from chives.util.hash import std_hash
 from chives.util.ints import uint8, uint16, uint32, uint64
 from chives.util.keychain import Keychain
-#from chia.wallet.derive_keys import (
-#    master_sk_to_farmer_sk,
-#    master_sk_to_pool_sk,
-#    master_sk_to_wallet_sk,
-#    find_authentication_sk,
-#    find_owner_sk,
-#)
-#from chia.wallet.puzzles.singleton_top_layer import SINGLETON_MOD
+from chives.wallet.derive_keys import (
+    master_sk_to_farmer_sk,
+    master_sk_to_pool_sk,
+    master_sk_to_wallet_sk,
+    find_authentication_sk,
+    find_owner_sk,
+)
+#from chives.wallet.puzzles.singleton_top_layer import SINGLETON_MOD
 
-#singleton_mod_hash = SINGLETON_MOD.get_tree_hash()
+singleton_mod_hash = SINGLETON_MOD.get_tree_hash()
 
 log = logging.getLogger(__name__)
 
