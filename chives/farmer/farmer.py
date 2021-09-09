@@ -312,11 +312,16 @@ class Farmer:
                     )
         return updated
 
-    async def get_cached_harvesters(self, connection: WSChivesConnection) -> Optional[Tuple[Dict, float]]:
+    async def get_cached_harvesters(self, connection: WSChivesConnection) -> HarvesterCacheEntry:
         host_cache = self.harvester_cache.get(connection.peer_host)
         if host_cache is None:
-            return None
-        return host_cache.get(connection.peer_node_id.hex())
+            host_cache = {}
+            self.harvester_cache[connection.peer_host] = host_cache
+        node_cache = host_cache.get(connection.peer_node_id.hex())
+        if node_cache is None:
+            node_cache = HarvesterCacheEntry()
+            host_cache[connection.peer_node_id.hex()] = node_cache
+        return node_cache
 
     async def get_harvesters(self) -> Dict:
         harvesters: List = []
