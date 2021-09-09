@@ -34,6 +34,7 @@ from chives.util.config import load_config, save_config, config_path_for_filenam
 from chives.util.hash import std_hash
 from chives.util.ints import uint8, uint16, uint32, uint64
 from chives.util.keychain import Keychain
+from chives.wallet.derive_keys import master_sk_to_farmer_sk, master_sk_to_pool_sk, master_sk_to_wallet_sk
 #from chives.wallet.derive_keys import (
 #    master_sk_to_farmer_sk,
 #    master_sk_to_pool_sk,
