@@ -55,6 +55,24 @@ UPDATE_POOL_FARMER_INFO_INTERVAL: int = 300
 HARVESTER PROTOCOL (FARMER <-> HARVESTER)
 """
 
+class HarvesterCacheEntry:
+    def __init__(self):
+        self.data: Optional[dict] = None
+        self.last_update: float = 0
+
+    def bump_last_update(self):
+        self.last_update = time.time()
+
+    def set_data(self, data):
+        self.data = data
+        self.bump_last_update()
+
+    def needs_update(self):
+        return time.time() - self.last_update > UPDATE_HARVESTER_CACHE_INTERVAL
+
+    def expired(self):
+        return time.time() - self.last_update > UPDATE_HARVESTER_CACHE_INTERVAL * 10
+
 
 class Farmer:
     def __init__(
@@ -136,6 +154,8 @@ class Farmer:
 
         # Last time we updated pool_state based on the config file
         self.last_config_access_time: uint64 = uint64(0)
+
+        self.harvester_cache: Dict[str, Dict[str, HarvesterCacheEntry]] = {}
 
     async def _start(self):
 
