@@ -26,6 +26,7 @@ from chives.protocols import farmer_protocol, harvester_protocol
 #)
 from chives.protocols.protocol_message_types import ProtocolMessageTypes
 from chives.server.outbound_message import NodeType, make_msg
+from chives.server.server import ssl_context_for_root
 from chives.server.ws_connection import WSChivesConnection
 from chives.types.blockchain_format.proof_of_space import ProofOfSpace
 from chives.types.blockchain_format.sized_bytes import bytes32
