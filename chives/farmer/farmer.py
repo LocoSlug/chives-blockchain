@@ -365,10 +365,10 @@ class Farmer:
                     removed_keys: List[bytes32] = []
                     for key, add_time in self.cache_add_time.items():
                         if now - float(add_time) > self.constants.SUB_SLOT_TIME_TARGET * 3:
-                            #self.sps.pop(key, None)
-                            #self.proofs_of_space.pop(key, None)
-                            #self.quality_str_to_identifiers.pop(key, None)
-                            #self.number_of_responses.pop(key, None)
+                            self.sps.pop(key, None)
+                            self.proofs_of_space.pop(key, None)
+                            self.quality_str_to_identifiers.pop(key, None)
+                            self.number_of_responses.pop(key, None)
                             removed_keys.append(key)
                     for key in removed_keys:
                         self.cache_add_time.pop(key, None)
