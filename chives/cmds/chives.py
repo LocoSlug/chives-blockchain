@@ -1,6 +1,6 @@
 import click
 
-from chives import __version__
+#from chives import __version__
 from chives.cmds.configure import configure_cmd
 from chives.cmds.farm import farm_cmd
 from chives.cmds.init import init_cmd
