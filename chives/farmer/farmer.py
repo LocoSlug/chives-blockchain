@@ -1,14 +1,13 @@
 import asyncio
-# import json
+import json
 import logging
 import time
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 import traceback
 
-# import aiohttp
-# from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
-from blspy import G1Element, PrivateKey
+import aiohttp
+from blspy import AugSchemeMPL, G1Element, G2Element, PrivateKey
 
 import chives.server.ws_connection as ws  # lgtm [py/import-and-import-from]
 from chives.consensus.coinbase import create_puzzlehash_for_pk
@@ -29,15 +28,14 @@ from chives.protocols import farmer_protocol, harvester_protocol
 
 from chives.protocols.protocol_message_types import ProtocolMessageTypes
 from chives.server.outbound_message import NodeType, make_msg
-# from chives.server.server import ssl_context_for_root
+from chives.server.server import ssl_context_for_root
 from chives.server.ws_connection import WSChivesConnection
 from chives.types.blockchain_format.proof_of_space import ProofOfSpace
 from chives.types.blockchain_format.sized_bytes import bytes32
 from chives.util.bech32m import decode_puzzle_hash
 from chives.util.config import load_config, save_config  # , config_path_for_filename
-# from chives.util.hash import std_hash
-from chives.util.ints import uint32, uint64
-# from chives.util.ints import uint8, uint16, uint32, uint64
+from chives.util.hash import std_hash
+from chives.util.ints import uint8, uint16, uint32, uint64
 from chives.util.keychain import Keychain
 from chives.wallet.derive_keys import master_sk_to_farmer_sk, master_sk_to_pool_sk, master_sk_to_wallet_sk
 
