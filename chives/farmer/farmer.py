@@ -13,17 +13,19 @@ import chives.server.ws_connection as ws  # lgtm [py/import-and-import-from]
 from chives.consensus.coinbase import create_puzzlehash_for_pk
 from chives.consensus.constants import ConsensusConstants
 from chives.protocols import farmer_protocol, harvester_protocol
-#from chives.protocols.pool_protocol import (
-#    ErrorResponse,
-#    get_current_authentication_token,
-#    GetFarmerResponse,
-#    PoolErrorCode,
-#    PostFarmerPayload,
-#    PostFarmerRequest,
-#    PutFarmerPayload,
-#    PutFarmerRequest,
-#    AuthenticationPayload,
-#)
+
+""" from chives.protocols.pool_protocol import (
+   ErrorResponse,
+   get_current_authentication_token,
+   GetFarmerResponse,
+   PoolErrorCode,
+   PostFarmerPayload,
+   PostFarmerRequest,
+   PutFarmerPayload,
+   PutFarmerRequest,
+   AuthenticationPayload,
+) """
+
 from chives.protocols.protocol_message_types import ProtocolMessageTypes
 from chives.server.outbound_message import NodeType, make_msg
 from chives.server.server import ssl_context_for_root
@@ -36,16 +38,17 @@ from chives.util.hash import std_hash
 from chives.util.ints import uint8, uint16, uint32, uint64
 from chives.util.keychain import Keychain
 from chives.wallet.derive_keys import master_sk_to_farmer_sk, master_sk_to_pool_sk, master_sk_to_wallet_sk
-#from chives.wallet.derive_keys import (
+
+# from chives.wallet.derive_keys import (
 #    master_sk_to_farmer_sk,
 #    master_sk_to_pool_sk,
 #    master_sk_to_wallet_sk,
 #    find_authentication_sk,
 #    find_owner_sk,
-#)
-#from chives.wallet.puzzles.singleton_top_layer import SINGLETON_MOD
+# )
+# from chives.wallet.puzzles.singleton_top_layer import SINGLETON_MOD
 
-#singleton_mod_hash = SINGLETON_MOD.get_tree_hash()
+# singleton_mod_hash = SINGLETON_MOD.get_tree_hash()
 
 log = logging.getLogger(__name__)
 
@@ -55,6 +58,7 @@ UPDATE_POOL_FARMER_INFO_INTERVAL: int = 300
 """
 HARVESTER PROTOCOL (FARMER <-> HARVESTER)
 """
+
 
 class HarvesterCacheEntry:
     def __init__(self):
@@ -111,13 +115,13 @@ class Farmer:
         self.state_changed_callback: Optional[Callable] = None
         self.log = log
         all_sks = self.keychain.get_all_private_keys()
-#        self.all_root_sks: List[PrivateKey] = [sk for sk, _ in self.keychain.get_all_private_keys()]
-        
+        # self.all_root_sks: List[PrivateKey] = [sk for sk, _ in self.keychain.get_all_private_keys()]
+
         self._private_keys = [master_sk_to_farmer_sk(sk) for sk, _ in all_sks] + [
             master_sk_to_pool_sk(sk) for sk, _ in all_sks
 
-#        self._private_keys = [master_sk_to_farmer_sk(sk) for sk in self.all_root_sks] + [
-#            master_sk_to_pool_sk(sk) for sk in self.all_root_sks
+        # self._private_keys = [master_sk_to_farmer_sk(sk) for sk in self.all_root_sks] + [
+            # master_sk_to_pool_sk(sk) for sk in self.all_root_sks
         ]
 
         if len(self.get_public_keys()) == 0:
@@ -167,7 +171,6 @@ class Farmer:
 
     async def _await_closed(self):
         await self.cache_clear_task
-
 
     def _set_state_changed_callback(self, callback: Callable):
         self.state_changed_callback = callback
@@ -237,34 +240,34 @@ class Farmer:
             config["pool"]["xcc_target_address"] = pool_target_encoded
         save_config(self._root_path, "config.yaml", config)
 
-    async def _periodically_clear_cache_and_refresh_task(self):
-        time_slept: uint64 = uint64(0)
-        refresh_slept = 0
-        while not self._shut_down:
-            if time_slept > self.constants.SUB_SLOT_TIME_TARGET:
-                now = time.time()
-                removed_keys: List[bytes32] = []
-                for key, add_time in self.cache_add_time.items():
-                    if now - float(add_time) > self.constants.SUB_SLOT_TIME_TARGET * 3:
-                        self.sps.pop(key, None)
-                        self.proofs_of_space.pop(key, None)
-                        self.quality_str_to_identifiers.pop(key, None)
-                        self.number_of_responses.pop(key, None)
-                        removed_keys.append(key)
-                for key in removed_keys:
-                    self.cache_add_time.pop(key, None)
-                time_slept = uint64(0)
-                log.debug(
-                    f"Cleared farmer cache. Num sps: {len(self.sps)} {len(self.proofs_of_space)} "
-                    f"{len(self.quality_str_to_identifiers)} {len(self.number_of_responses)}"
-                )
-            time_slept += 1
-            refresh_slept += 1
-            # Periodically refresh GUI to show the correct download/upload rate.
-            if refresh_slept >= 30:
-                self.state_changed("add_connection", {})
-                refresh_slept = 0
-            await asyncio.sleep(1)
+    # async def _periodically_clear_cache_and_refresh_task(self):
+    #     time_slept: uint64 = uint64(0)
+    #     refresh_slept = 0
+    #     while not self._shut_down:
+    #         if time_slept > self.constants.SUB_SLOT_TIME_TARGET:
+    #             now = time.time()
+    #             removed_keys: List[bytes32] = []
+    #             for key, add_time in self.cache_add_time.items():
+    #                 if now - float(add_time) > self.constants.SUB_SLOT_TIME_TARGET * 3:
+    #                     self.sps.pop(key, None)
+    #                     self.proofs_of_space.pop(key, None)
+    #                     self.quality_str_to_identifiers.pop(key, None)
+    #                     self.number_of_responses.pop(key, None)
+    #                     removed_keys.append(key)
+    #             for key in removed_keys:
+    #                 self.cache_add_time.pop(key, None)
+    #             time_slept = uint64(0)
+    #             log.debug(
+    #                 f"Cleared farmer cache. Num sps: {len(self.sps)} {len(self.proofs_of_space)} "
+    #                 f"{len(self.quality_str_to_identifiers)} {len(self.number_of_responses)}"
+    #             )
+    #         time_slept += 1
+    #         refresh_slept += 1
+    #         # Periodically refresh GUI to show the correct download/upload rate.
+    #         if refresh_slept >= 30:
+    #             self.state_changed("add_connection", {})
+    #             refresh_slept = 0
+    #         await asyncio.sleep(1)
 
     async def update_cached_harvesters(self) -> bool:
         # First remove outdated cache entries
@@ -340,18 +343,18 @@ class Farmer:
             else:
                 self.log.debug(f"get_harvesters no cache: {connection.peer_host}, node_id: {connection.peer_node_id}")
 
-            #if connection.connection_type != NodeType.HARVESTER:
-            #    continue
+            # if connection.connection_type != NodeType.HARVESTER:
+            #     continue
 
-            #cache_entry = await self.get_cached_harvesters(connection)
-            #if cache_entry is not None:
-            #    harvester_object: dict = dict(cache_entry[0])
-            #    harvester_object["connection"] = {
-            #        "node_id": connection.peer_node_id.hex(),
-            #        "host": connection.peer_host,
-            #        "port": connection.peer_port,
-            #    }
-            #    harvesters.append(harvester_object)
+            # cache_entry = await self.get_cached_harvesters(connection)
+            # if cache_entry is not None:
+            #     harvester_object: dict = dict(cache_entry[0])
+            #     harvester_object["connection"] = {
+            #         "node_id": connection.peer_node_id.hex(),
+            #         "host": connection.peer_host,
+            #         "port": connection.peer_port,
+            #     }
+            #     harvesters.append(harvester_object)
 
         return {"harvesters": harvesters}
 
