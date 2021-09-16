@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List
 
 from chives.farmer.farmer import Farmer
 from chives.util.byte_types import hexstr_to_bytes
@@ -16,7 +16,7 @@ class FarmerRpcApi:
             "/get_signage_points": self.get_signage_points,
             "/get_reward_targets": self.get_reward_targets,
             "/set_reward_targets": self.set_reward_targets,
-			"/get_harvesters": self.get_harvesters,
+            "/get_harvesters": self.get_harvesters,
         }
 
     async def _state_changed(self, change: str, change_data: Dict) -> List[WsRpcMessage]:

@@ -1,12 +1,15 @@
+# import json
 import time
-from typing import Callable, Optional
+from typing import Callable, Optional, List, Any, Dict
 
-from blspy import AugSchemeMPL, G2Element
+from blspy import AugSchemeMPL, G2Element, PrivateKey
 
 import chives.server.ws_connection as ws
+# from chives.consensus.network_type import NetworkType
 from chives.consensus.pot_iterations import calculate_iterations_quality, calculate_sp_interval_iters
 from chives.farmer.farmer import Farmer
 from chives.protocols import farmer_protocol, harvester_protocol
+# from chives.protocols.harvester_protocol import PoolDifficulty
 from chives.protocols.protocol_message_types import ProtocolMessageTypes
 from chives.server.outbound_message import NodeType, make_msg
 from chives.types.blockchain_format.pool_target import PoolTarget
@@ -292,3 +295,7 @@ class FarmerAPI:
                 }
             },
         )
+
+    @api_request
+    async def respond_plots(self, _: harvester_protocol.RespondPlots):
+        self.farmer.log.warning("Respond plots came too late")

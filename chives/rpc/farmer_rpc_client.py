@@ -42,5 +42,8 @@ class FarmerRpcClient(RpcClient):
             request["pool_target"] = pool_target
         return await self.fetch("set_reward_targets", request)
 
+    # async def get_plots(self) -> Dict[str, Any]:
+    #     return await self.fetch("get_plots", {})
+
     async def get_harvesters(self) -> Dict[str, Any]:
         return await self.fetch("get_harvesters", {})
