@@ -1144,7 +1144,7 @@ class FullNode:
             and block.transactions_info.generator_root != bytes([0] * 32)
             and block.transactions_generator is None
         ):
-            self.log.warning("This is the case where we already had the unfinished block, and asked for this block without")
+            self.log.debug("This is the case where we already had the unfinished block, and asked for this block without")
             # This is the case where we already had the unfinished block, and asked for this block without
             # the transactions (since we already had them). Therefore, here we add the transactions.
             unfinished_rh: bytes32 = block.reward_chain_block.get_unfinished().get_hash()
@@ -1195,7 +1195,7 @@ class FullNode:
             # self.log.warning(self.blockchain.contains_block(header_hash))
             # After acquiring the lock, check again, because another asyncio thread might have added it
             if self.blockchain.contains_block(header_hash):
-                self.log.warning("self.blockchain.contains_block(header_hash) 1199")
+                self.log.debug("self.blockchain.contains_block(header_hash) 1199")
                 return None
             validation_start = time.time()
             # Tries to add the block to the blockchain, if we already validated transactions, don't do it again
