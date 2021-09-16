@@ -279,8 +279,8 @@ class WSChivesConnection:
             )
             if result is not None:
                 ret_attr = getattr(class_for_type(self.local_type), ProtocolMessageTypes(result.type).name, None)
-                
-                print("result.type: " + result.type)
+
+                print("result.type: " + str(result.type))
                 print("ProtocolMessageTypes(result.type).name: " + ProtocolMessageTypes(result.type).name)
 
                 req_annotations = ret_attr.__annotations__
