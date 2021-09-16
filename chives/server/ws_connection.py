@@ -270,7 +270,7 @@ class WSChivesConnection:
                 raise AttributeError(f"Node type {self.connection_type} does not have method {attr_name}")
 
             msg = Message(uint8(getattr(ProtocolMessageTypes, attr_name).value), None, args[0])
-            print(msg)
+            print("attr_name: " + attr_name)
             request_start_t = time.time()
             result = await self.create_request(msg, timeout)
             self.log.debug(
@@ -279,7 +279,7 @@ class WSChivesConnection:
             )
             if result is not None:
                 ret_attr = getattr(class_for_type(self.local_type), ProtocolMessageTypes(result.type).name, None)
-                print("Self local_type: " + self.local_type)
+                
                 print("result.type: " + result.type)
                 print("ProtocolMessageTypes(result.type).name: " + ProtocolMessageTypes(result.type).name)
 
