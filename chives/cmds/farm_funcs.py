@@ -13,6 +13,7 @@ from chives.util.default_root import DEFAULT_ROOT_PATH
 from chives.util.ints import uint16
 from chives.util.misc import format_bytes
 from chives.util.misc import format_minutes
+from chives.util.network import is_localhost
 
 SECONDS_PER_BLOCK = (24 * 3600) / 4608
 
@@ -37,6 +38,7 @@ async def get_harvesters(farmer_rpc_port: Optional[int]) -> Optional[Dict[str, A
     await farmer_client.await_closed()
     return plots
 
+
 async def get_plots(harvester_rpc_port: int) -> Optional[Dict[str, Any]]:
     plots = None
     try:
@@ -59,7 +61,7 @@ async def get_plots(harvester_rpc_port: int) -> Optional[Dict[str, Any]]:
     return plots
 
 
-async def get_blockchain_state(rpc_port: int) -> Optional[Dict[str, Any]]:
+async def get_blockchain_state(rpc_port: Optional[int]) -> Optional[Dict[str, Any]]:
     blockchain_state = None
     try:
         config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
@@ -79,7 +81,7 @@ async def get_blockchain_state(rpc_port: int) -> Optional[Dict[str, Any]]:
     return blockchain_state
 
 
-async def get_average_block_time(rpc_port: int) -> float:
+async def get_average_block_time(rpc_port: Optional[int]) -> float:
     try:
         blocks_to_compare = 500
         config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
@@ -123,7 +125,7 @@ async def get_average_block_time(rpc_port: int) -> float:
     return SECONDS_PER_BLOCK
 
 
-async def get_wallets_stats(wallet_rpc_port: int) -> Optional[Dict[str, Any]]:
+async def get_wallets_stats(wallet_rpc_port: Optional[int]) -> Optional[Dict[str, Any]]:
     amounts = None
     try:
         config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
@@ -142,7 +144,7 @@ async def get_wallets_stats(wallet_rpc_port: int) -> Optional[Dict[str, Any]]:
     return amounts
 
 
-async def is_farmer_running(farmer_rpc_port: int) -> bool:
+async def is_farmer_running(farmer_rpc_port: Optional[int]) -> bool:
     is_running = False
     try:
         config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
@@ -191,8 +193,8 @@ async def challenges(farmer_rpc_port: int, limit: int) -> None:
     signage_points.reverse()
     if limit != 0:
         signage_points = signage_points[:limit]
-    
-    #print(signage_points)
+
+    # print(signage_points)
     for signage_point in signage_points:
         print(
             (
@@ -208,8 +210,8 @@ async def summary(
     harvester_rpc_port: Optional[int],
     farmer_rpc_port: Optional[int],
 ) -> None:
-    all_harvesters = await get_harvesters(farmer_rpc_port)    
-    plots = await get_plots(harvester_rpc_port)
+    all_harvesters = await get_harvesters(farmer_rpc_port)
+    # plots = await get_plots(harvester_rpc_port)
     blockchain_state = await get_blockchain_state(rpc_port)
     farmer_running = await is_farmer_running(farmer_rpc_port)
 
@@ -244,25 +246,25 @@ async def summary(
         print(f"Farmer Reward: {amounts['farmer_reward_amount'] / units['chives']}")
         print(f"Pool Reward: {amounts['pool_reward_amount'] / units['chives']}")
 
-    total_plot_size = 0
-    #if plots is not None:
+    # total_plot_size = 0
+    # if plots is not None:
     #    total_plot_size = sum(map(lambda x: x["file_size"], plots["plots"]))
 
     #    print(f"Plot count: {len(plots['plots'])}")
 
     #    print("Total size of plots: ", end="")
     #    print(format_bytes(total_plot_size))
-    #else:
+    # else:
     #    print("Plot count: Unknown")
     #    print("Total size of plots: Unknown")
 
-    #if blockchain_state is not None:
+    # if blockchain_state is not None:
     #    print("Estimated network space: ", end="")
     #    print(format_bytes(blockchain_state["space"]))
-    #else:
+    # else:
     #    print("Estimated network space: Unknown")
 
-####### Ported from chia 1.2.x
+    # ###### Ported from chia 1.2.x
     class PlotStats:
         total_plot_size = 0
         total_plots = 0
@@ -310,7 +312,7 @@ async def summary(
 
     minutes = -1
 
-####### Ported from chia 1.2.x
+    # ###### Ported from chia 1.2.x
     if blockchain_state is not None and all_harvesters is not None:
         proportion = PlotStats.total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
         minutes = int((await get_average_block_time(rpc_port) / 60) / proportion) if proportion else -1
@@ -319,15 +321,15 @@ async def summary(
         print("Expected time to win: Never (no plots)")
     else:
         print("Expected time to win: " + format_minutes(minutes))
-#######
+    # ######
 
-    #if blockchain_state is not None and plots is not None:
+    # if blockchain_state is not None and plots is not None:
     #    proportion = total_plot_size / blockchain_state["space"] if blockchain_state["space"] else -1
     #    minutes = int((await get_average_block_time(rpc_port) / 60) / proportion) if proportion else -1
 
-    #if plots is not None and len(plots["plots"]) == 0:
+    # if plots is not None and len(plots["plots"]) == 0:
     #    print("Expected time to win: Never (no plots)")
-    #else:
+    # else:
     #    print("Expected time to win: " + format_minutes(minutes))
 
     if amounts is None:
@@ -390,7 +392,7 @@ async def uploadfarmerdata(rpc_port: int, wallet_rpc_port: int, harvester_rpc_po
         ExpectedTimeToWin = "Never (no plots)"
     else:
         ExpectedTimeToWin = format_minutes(minutes)
-    
+
     signage_points = await get_challenges(farmer_rpc_port)
     if signage_points is None:
         ""
@@ -399,14 +401,14 @@ async def uploadfarmerdata(rpc_port: int, wallet_rpc_port: int, harvester_rpc_po
         limit = 10
         if limit != 0:
             signage_points = signage_points[:limit]
-    
-    #get wallet address and fingerprint
-    from typing import List
-    from blspy import AugSchemeMPL, G1Element, G2Element
+
+    # get wallet address and fingerprint
+    # from typing import List
+    # from blspy import AugSchemeMPL, G1Element, G2Element
     from chives.consensus.coinbase import create_puzzlehash_for_pk
     from chives.util.bech32m import encode_puzzle_hash
-    from chives.util.config import load_config
-    from chives.util.default_root import DEFAULT_ROOT_PATH
+    # from chives.util.config import load_config
+    # from chives.util.default_root import DEFAULT_ROOT_PATH
     from chives.util.ints import uint32
     from chives.util.keychain import Keychain, bytes_to_mnemonic, generate_mnemonic
     from chives.wallet.derive_keys import master_sk_to_farmer_sk, master_sk_to_pool_sk, master_sk_to_wallet_sk
@@ -425,10 +427,10 @@ async def uploadfarmerdata(rpc_port: int, wallet_rpc_port: int, harvester_rpc_po
             FingerPrint = str(FingerPrint)[0:6]
             Address = encode_puzzle_hash(create_puzzlehash_for_pk(master_sk_to_wallet_sk(sk, uint32(0)).get_g1()), prefix)
             break
-    
+
     from hashlib import sha256
     import platform
-    RETURN_TEXT     = {}
+    RETURN_TEXT = {}
     RETURN_TEXT['MinerName'] = platform.node()
     RETURN_TEXT['FingerPrint'] = FingerPrint
     RETURN_TEXT['Address0'] = Address[0:45]
@@ -443,5 +445,4 @@ async def uploadfarmerdata(rpc_port: int, wallet_rpc_port: int, harvester_rpc_po
     RETURN_TEXT['wallet_not_ready'] = wallet_not_ready
     RETURN_TEXT['signage_points'] = signage_points
     return RETURN_TEXT
-    #print(signage_points)
-    
+    # print(signage_points)
