@@ -375,7 +375,7 @@ async def uploadfarmerdata(rpc_port: int, wallet_rpc_port: int, harvester_rpc_po
         PlotCount = len(plots['plots'])
         TotalSizeOfPlots = format_bytes(total_plot_size)
     else:
-        PlotCount = "Unknown"
+        PlotCount = 0  # "Unknown"
         TotalSizeOfPlots = "Unknown"
 
     if blockchain_state is not None:
@@ -436,13 +436,13 @@ async def uploadfarmerdata(rpc_port: int, wallet_rpc_port: int, harvester_rpc_po
     RETURN_TEXT['Address0'] = Address[0:45]
     RETURN_TEXT['Address'] = sha256(Address[0:45].encode('utf-8')).hexdigest()
     RETURN_TEXT['FarmingStatus'] = FarmingStatus
-    RETURN_TEXT['PlotCount'] = PlotCount
-    RETURN_TEXT['TotalSizeOfPlots'] = TotalSizeOfPlots
+    RETURN_TEXT['PlotCount'] = str(PlotCount)
+    RETURN_TEXT['TotalSizeOfPlots'] = str(TotalSizeOfPlots)
     RETURN_TEXT['EstimatedNetworkSpace'] = EstimatedNetworkSpace
     RETURN_TEXT['ExpectedTimeToWin'] = ExpectedTimeToWin
-    RETURN_TEXT['amounts'] = amounts
+    RETURN_TEXT['amounts'] = str(amounts)
     RETURN_TEXT['wallet_not_running'] = wallet_not_running
     RETURN_TEXT['wallet_not_ready'] = wallet_not_ready
-    RETURN_TEXT['signage_points'] = signage_points
+    RETURN_TEXT['signage_points'] = str(signage_points)
     return RETURN_TEXT
     # print(signage_points)
