@@ -4,4 +4,4 @@
 [submodule "chives-blockchain-gui"]
 	path = chives-blockchain-gui
 	url = https://github.com/LocoSlug/chives-blockchain-gui.git
-	branch = main
+	branch = origin/HarvesterPatch
