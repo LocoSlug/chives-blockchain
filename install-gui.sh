@@ -74,7 +74,7 @@ fi
 if [ ! "$CI" ]; then
 	echo "Running git submodule update --init --recursive."
 	echo ""
-	git submodule update --init --recursive
+	git submodule update --init --recursive -f
 	echo "Running git submodule update."
 	echo ""
 	git submodule update
