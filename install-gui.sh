@@ -80,7 +80,7 @@ if [ ! "$CI" ]; then
 	git submodule update
 	cd chives-blockchain-gui
 
-	git pull origin main
+	git pull origin HarvesterPatch
 	echo "----------------------------------------------"
 	echo "Building the GUI with branch $SUBMODULE_BRANCH"
 	echo "----------------------------------------------"
